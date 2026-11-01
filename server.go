@@ -238,17 +238,23 @@ func (s *Server) listenAndServe(ctx context.Context) error {
 	dnsCtx, dnsCancel := context.WithCancel(ctx)
 	defer dnsCancel()
 
-	dnsStop := make(chan struct{})
+	serverCtx, serverCancel := context.WithCancel(ctx)
+	defer serverCancel()
+
+	// If the dnssd responder fails, controllers can no longer discover
+	// the accessory. Stop the http server so that the error is returned
+	// instead of serving requests nobody can find.
+	dnsStop := make(chan error, 1)
 	go func() {
-		resp.Respond(dnsCtx)
-		log.Debug.Println("dnssd responder stopped")
-		dnsStop <- struct{}{}
+		err := resp.Respond(dnsCtx)
+		log.Debug.Println("dnssd responder stopped:", err)
+		if dnsCtx.Err() == nil {
+			serverCancel()
+		}
+		dnsStop <- err
 	}()
 
 	log.Debug.Println("listening at", ln.Addr())
-
-	serverCtx, serverCancel := context.WithCancel(ctx)
-	defer serverCancel()
 
 	serverStop := make(chan struct{})
 	go func() {
@@ -260,8 +266,17 @@ func (s *Server) listenAndServe(ctx context.Context) error {
 	}()
 
 	err = s.ss.Serve(ln)
-	<-dnsStop
+
+	// Serve may also return on its own (e.g. accept failed),
+	// so make sure both goroutines stop before returning.
+	serverCancel()
+	dnsCancel()
+	dnsErr := <-dnsStop
 	<-serverStop
+
+	if ctx.Err() == nil && dnsErr != nil && !errors.Is(dnsErr, context.Canceled) {
+		return fmt.Errorf("dnssd: %w", dnsErr)
+	}
 
 	return err
 }
