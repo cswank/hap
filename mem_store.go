@@ -2,6 +2,7 @@ package hap
 
 import (
 	"fmt"
+	"os"
 	"strings"
 )
 
@@ -22,7 +23,7 @@ func (fs memStore) Get(key string) ([]byte, error) {
 		return v, nil
 	}
 
-	return nil, fmt.Errorf("no entry for key %s", key)
+	return nil, fmt.Errorf("no entry for key %s: %w", key, os.ErrNotExist)
 }
 
 func (fs memStore) Delete(key string) error {

@@ -5,6 +5,7 @@ import (
 
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -64,14 +65,20 @@ type storer struct {
 
 // migrate migrates data from previous versions.
 func migrate(st *storer) error {
-	s, _ := st.GetString("schema")
+	s, err := st.GetString("schema")
+	if err != nil && !errors.Is(err, os.ErrNotExist) {
+		return err
+	}
+
 	switch s {
 	case "": // schema is not set by previous hc version
 		err := migrateFromHc(st)
 		if err != nil {
 			return err
 		}
-		st.SetString("schema", "1")
+		if err := st.SetString("schema", "1"); err != nil {
+			return err
+		}
 	case "1": // up to date
 		break
 	}

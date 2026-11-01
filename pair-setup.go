@@ -243,12 +243,9 @@ func (srv *Server) pairSetupM5(res http.ResponseWriter, req *http.Request, data 
 
 	encrypted, mac, _ := chacha20poly1305.EncryptAndSeal(ses.EncryptionKey[:], []byte("PS-Msg06"), b, nil)
 
-	resp := pairSetupM6Payload{
-		State:         M6,
-		EncryptedData: append(encrypted, mac[:]...),
-	}
-	tlv8OK(res, resp)
-
+	// Store the pairing before reporting success to the controller.
+	// Otherwise the controller considers itself paired even though
+	// the pairing is lost and pair-verify fails afterwards.
 	log.Debug.Println("storing public key for", encData.Identifier)
 
 	p := Pairing{
@@ -256,5 +253,15 @@ func (srv *Server) pairSetupM5(res http.ResponseWriter, req *http.Request, data 
 		PublicKey:  encData.PublicKey,
 		Permission: PermissionAdmin, // controller is admin by default
 	}
-	srv.savePairing(p)
+	if err := srv.savePairing(p); err != nil {
+		log.Info.Println("saving pairing failed:", err)
+		tlv8Error(res, M6, TlvErrorUnknown)
+		return
+	}
+
+	resp := pairSetupM6Payload{
+		State:         M6,
+		EncryptedData: append(encrypted, mac[:]...),
+	}
+	tlv8OK(res, resp)
 }

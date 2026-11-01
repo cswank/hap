@@ -121,7 +121,9 @@ func (srv *Server) pairings(res http.ResponseWriter, req *http.Request) {
 				log.Debug.Println("Closing connection to", addr)
 				conn.Close()
 			}
-			srv.deleteAllPairings()
+			if err := srv.deleteAllPairings(); err != nil {
+				log.Info.Println(err)
+			}
 		}
 
 		// Close connection of deleted controller

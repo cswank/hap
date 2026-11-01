@@ -85,7 +85,7 @@ func NewServer(store Store, a *accessory.A, as ...*accessory.A) (*Server, error)
 
 	st := &storer{store}
 	if err := migrate(st); err != nil {
-		log.Info.Panic(err)
+		return nil, err
 	}
 
 	s := &Server{
@@ -336,8 +336,12 @@ func (s *Server) add(as []*accessory.A) error {
 	newHash = configHash(as)
 	if !reflect.DeepEqual(oldHash, newHash) {
 		s.version += 1
-		s.st.Set("version", []byte(fmt.Sprintf("%d", s.version)))
-		s.st.Set("configHash", newHash)
+		if err := s.st.Set("version", []byte(fmt.Sprintf("%d", s.version))); err != nil {
+			return err
+		}
+		if err := s.st.Set("configHash", newHash); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -467,11 +471,20 @@ func (s *Server) deletePairing(p Pairing) error {
 	return nil
 }
 
-func (s *Server) deleteAllPairings() {
+// deleteAllPairings deletes all pairings. If a pairing could not be deleted,
+// the remaining pairings are still deleted and the first error is returned.
+func (s *Server) deleteAllPairings() error {
+	var firstErr error
 	for _, p := range s.st.Pairings() {
-		s.st.DeletePairing(p.Name)
+		if err := s.st.DeletePairing(p.Name); err != nil {
+			log.Info.Printf("deleting pairing %s failed: %v\n", p.Name, err)
+			if firstErr == nil {
+				firstErr = err
+			}
+		}
 	}
 	s.updateTxtRecords()
+	return firstErr
 }
 
 func (s *Server) pairedWithAdmin() bool {

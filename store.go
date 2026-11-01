@@ -7,6 +7,8 @@ type Store interface {
 	Set(key string, value []byte) error
 
 	// Get returns the value for the given key.
+	// If no value exists for the key, the returned error
+	// should wrap os.ErrNotExist.
 	Get(key string) ([]byte, error)
 
 	// Delete deletes the value for the given key.
