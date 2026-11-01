@@ -175,17 +175,6 @@ This service contains the [on](characteristic/on.go) characteristic.
 There are predefined accessories, services and characteristics available in HomeKit.
 Those types are defined in the packages [accessory](accessory), [service](service), [characteristic](characteristic).
 
-# Contact
-
-Matthias Hochgatterer
-
-Website: [https://hochgatterer.me](https://hochgatterer.me)
-
-Github: [https://github.com/brutella](https://github.com/brutella/)
-
-Twitter: [https://twitter.com/brutella](https://twitter.com/brutella)
-
-
 # License
 
 `hap` is available under the Apache License 2.0 license. See the LICENSE file for more info.
