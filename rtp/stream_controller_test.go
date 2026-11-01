@@ -3,8 +3,8 @@ package rtp
 import (
 	"testing"
 
-	"github.com/brutella/hap/characteristic"
-	"github.com/brutella/hap/tlv8"
+	"github.com/cswank/hap/characteristic"
+	"github.com/cswank/hap/tlv8"
 )
 
 func TestStreamController(t *testing.T) {

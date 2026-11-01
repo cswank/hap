@@ -3,8 +3,8 @@ package hap
 import (
 	"time"
 
-	"github.com/brutella/hap/chacha20poly1305"
-	"github.com/brutella/hap/hkdf"
+	"github.com/cswank/hap/chacha20poly1305"
+	"github.com/cswank/hap/hkdf"
 
 	"bytes"
 	"encoding/binary"

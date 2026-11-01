@@ -1,9 +1,9 @@
 package hap
 
 import (
-	"github.com/brutella/hap/accessory"
-	"github.com/brutella/hap/characteristic"
-	"github.com/brutella/hap/service"
+	"github.com/cswank/hap/accessory"
+	"github.com/cswank/hap/characteristic"
+	"github.com/cswank/hap/service"
 
 	"bytes"
 	"fmt"

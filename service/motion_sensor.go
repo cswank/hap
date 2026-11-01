@@ -2,7 +2,7 @@
 package service
 
 import (
-	"github.com/brutella/hap/characteristic"
+	"github.com/cswank/hap/characteristic"
 )
 
 const TypeMotionSensor = "85"

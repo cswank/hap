@@ -1,6 +1,6 @@
 package accessory
 
-import "github.com/brutella/hap/service"
+import "github.com/cswank/hap/service"
 
 type ContactSensor struct {
 	*A

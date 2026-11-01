@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"github.com/brutella/dnssd"
-	"github.com/brutella/hap/accessory"
-	"github.com/brutella/hap/characteristic"
-	"github.com/brutella/hap/log"
+	"github.com/cswank/hap/accessory"
+	"github.com/cswank/hap/characteristic"
+	"github.com/cswank/hap/log"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/xiam/to"
