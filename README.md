@@ -8,24 +8,12 @@ It abstracts the **H**omeKit **A**ccessory **P**rotocol (HAP) and makes it easy 
 `hap` handles the underlying communication between HomeKit accessories and clients.
 You can focus on implementing the business logic for your accessory, without having to worry about the protocol.
 
-Here are some projects which use `hap`.
-
-- [hkknx](https://hochgatterer.me/hkknx)
-- [hkcam](https://github.com/brutella/hkcam)
-
 **What is HomeKit?**
 
 [HomeKit][homekit] is a set of protocols and libraries from Apple. It is used by Apple's platforms to communicate with smart home appliances. A non-commercial version of the documentation is now available on the [HomeKit developer website](https://developer.apple.com/homekit/).
 
 HomeKit is fully integrated into iOS since iOS 8. Developers can use [HomeKit.framework](https://developer.apple.com/documentation/homekit) to communicate with accessories using high-level APIs.
 
-<img alt="Home+.app" src="_img/home+.png?raw=true" width="150" />
-
-I've developed the [Home+][home+] app to control HomeKit accessories from iPhone, iPad, and Apple Watch.
-If you want to support `hap`, please purchase Home from the [App Store][home-appstore]. That would be awesome. ❤️
-
-[home+]: https://hochgatterer.me/home+/
-[home-appstore]: http://itunes.apple.com/app/id995994352
 [GoDoc]: https://godoc.org/github.com/cswank/hap
 [GoDoc Widget]: https://godoc.org/github.com/cswank/hap?status.svg
 
